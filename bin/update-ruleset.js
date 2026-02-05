@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 
 import { readSushiConfig, getFshInputFolder } from "../lib/utils.js";
 import fs from 'fs-extra';
@@ -11,7 +11,7 @@ if (args.includes('--help') || args.includes('-h')) {
     console.log(`
 Usage: fhir-update-ruleset [options]
 
-Generates or updates RuleSet-metadata.fsh with current project metadata
+Generates or updates ConformanceMetadata.fsh with current project metadata
 
 Options:
   -h, --help         Display this help message
@@ -20,13 +20,13 @@ Description:
   Reads metadata from sushi-config.yaml and generates a FHIR Shorthand
   RuleSet containing version, publisher, date, and contact information.
   
-  Verifies that the version in RuleSet-metadata.fsh matches sushi-config.yaml.
+  Verifies that the version in ConformanceMetadata.fsh matches sushi-config.yaml.
   
   The RuleSet can be inserted into conformance resources using:
   * insert ConformanceMetadata
 
 Output:
-  Creates or updates: input/fsh/RuleSet-metadata.fsh
+  Creates or updates: input/fsh/ConformanceMetadata.fsh
 
 Examples:
   fhir-update-ruleset
@@ -56,8 +56,8 @@ const updateRuleset = () => {
     const fshInputFolder = getFshInputFolder();
     fs.ensureDirSync(fshInputFolder);
 
-    // Check if RuleSet-metadata.fsh already exists and verify version
-    const rulesetPath = path.join(fshInputFolder, 'RuleSet-metadata.fsh');
+    // Check if ConformanceMetadata.fsh already exists and verify version
+    const rulesetPath = path.join(fshInputFolder, 'ConformanceMetadata.fsh');
     if (fs.existsSync(rulesetPath)) {
         const existingContent = fs.readFileSync(rulesetPath, 'utf8');
         const versionMatch = existingContent.match(/\*\s*\^version\s*=\s*"([^"]+)"/);
@@ -65,7 +65,7 @@ const updateRuleset = () => {
         if (versionMatch) {
             const existingVersion = versionMatch[1];
             if (existingVersion !== version) {
-                console.log(`  Version mismatch detected in RuleSet-metadata.fsh`);
+                console.log(`  Version mismatch detected in ConformanceMetadata.fsh`);
                 console.log(`   Current: ${existingVersion}  Updated: ${version}`);
             }
         }
@@ -74,7 +74,8 @@ const updateRuleset = () => {
     // Write the RuleSet file
     fs.writeFileSync(rulesetPath, fsh, 'utf8');
 
-    console.log(` Updated RuleSet-metadata.fsh with version ${version} and date ${_date}`);
+    console.log(` Updated ConformanceMetadata.fsh with version ${version} and date ${_date}`);
 };
 
 updateRuleset();
+

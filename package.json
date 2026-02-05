@@ -6,14 +6,18 @@
   "main": "index.js",
   "bin": {
     "fhir-validate-fsh": "./bin/validate-fsh.js",
+    "fhir-validate-config": "./bin/validate-config.js",
+    "fhir-validate-quality": "./bin/validate-quality.js",
     "fhir-validate-ig": "./bin/validate-ig.js",
     "fhir-validate-examples": "./bin/validate-examples.js",
+    "fhir-check-publication": "./bin/check-publication.js",
     "fhir-sync-version": "./bin/sync-version.js",
     "fhir-update-ruleset": "./bin/update-ruleset.js",
-    "fhir-install-java": "./bin/install-java.js",\n    "fhir-validate-config": "./bin/validate-config.js",\n    "fhir-validate-ready": "./bin/validate-ready.js"
+    "fhir-install-java": "./bin/install-java.js",
+    "fhir-test": "./bin/test.js"
   },
   "scripts": {
-    "test": "echo \"Run tests in your FHIR IG project\" && exit 0"
+    "postinstall": "node ./bin/postinstall.js"
   },
   "keywords": [
     "fhir",
@@ -45,4 +49,3 @@
     "node": ">=18.0.0"
   }
 }
-
