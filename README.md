@@ -112,7 +112,76 @@ fhir-validate-examples
 
 ---
 
-### fhir-validate-config\n\nValidates sushi-config.yaml for common issues.\n\n```bash\nfhir-validate-config [options]\n```\n\n**Options:**\n- `-h, --help` - Display help message\n\n**Checks performed:**\n- Dependency versions are locked (not 'latest' or ranges)\n- Required fields are present (id, version, publisher, etc.)\n- Jurisdiction is set for publication\n- Contact information is complete\n\n**Examples:**\n```bash\nfhir-validate-config\n```\n\n---\n\n### fhir-validate-ready\n\nPre-publication readiness checklist.\n\n```bash\nfhir-validate-ready [options]\n```\n\n**Options:**\n- `-h, --help` - Display help message\n\n**Checks performed:**\n- All conformance resources have descriptions\n- Publisher, jurisdiction, contact are set\n- Version is not 0.x.x (development version)\n- No resources with status 'draft'\n\n**Examples:**\n```bash\nfhir-validate-ready\n```\n\n---\n\n### fhir-sync-version\n\nSynchronizes version from sushi-config.yaml to package.json.\n\n```bash\nfhir-sync-version [options]\n```\n\n**Options:**\n- `-h, --help` - Display help message\n\n**Description:**\nReads the version from sushi-config.yaml and updates both package.json and package-lock.json to match. Ensures version consistency across all project files.\n\n**Examples:**\n```bash\nfhir-sync-version\n```\n\n---\n\n### fhir-update-ruleset
+### fhir-validate-config
+
+Validates sushi-config.yaml for common issues.
+
+```bash
+fhir-validate-config [options]
+```
+
+**Options:**
+- `-h, --help` - Display help message
+
+**Checks performed:**
+- Dependency versions are locked (not 'latest' or ranges)
+- Required fields are present (id, version, publisher, etc.)
+- Jurisdiction is set for publication
+- Contact information is complete
+
+**Examples:**
+```bash
+fhir-validate-config
+```
+
+---
+
+### fhir-validate-ready
+
+Pre-publication readiness checklist.
+
+```bash
+fhir-validate-ready [options]
+```
+
+**Options:**
+- `-h, --help` - Display help message
+
+**Checks performed:**
+- All conformance resources have descriptions
+- Publisher, jurisdiction, contact are set
+- Version is not 0.x.x (development version)
+- No resources with status 'draft'
+
+**Examples:**
+```bash
+fhir-validate-ready
+```
+
+---
+
+### fhir-sync-version
+
+Synchronizes version from sushi-config.yaml to package.json.
+
+```bash
+fhir-sync-version [options]
+```
+
+**Options:**
+- `-h, --help` - Display help message
+
+**Description:**
+Reads the version from sushi-config.yaml and updates both package.json and package-lock.json to match. Ensures version consistency across all project files.
+
+**Examples:**
+```bash
+fhir-sync-version
+```
+
+---
+
+### fhir-update-ruleset
 
 Generates or updates RuleSet-metadata.fsh with current project metadata.
 
@@ -305,6 +374,7 @@ MIT
 ## Author
 
 Outburn IL - FHIR Implementation Guide development tools
+
 
 
 
