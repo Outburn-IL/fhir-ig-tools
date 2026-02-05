@@ -1,4 +1,4 @@
-# fsh&chips 🍟
+# FSH&Chips 🍟
 
 **FHIR Shorthand & Comprehensive Helpers for Implementation Publishing Success**
 
@@ -373,7 +373,7 @@ MIT
 
 ## Author
 
-Outburn IL - FHIR Implementation Guide development tools
+Outburn Ltd. 
 
 
 
