@@ -1,6 +1,8 @@
-# @outburn-il/fhir-ig-tools
+# fsh&chips 🍟
 
-FHIR Implementation Guide validation and build tools for FSH (FHIR Shorthand) projects.
+**FHIR Shorthand & Comprehensive Helpers for Implementation Publishing Success**
+
+Validation and build tools for FHIR Implementation Guide projects using FHIR Shorthand (FSH).
 
 ## Features
 
@@ -13,16 +15,14 @@ FHIR Implementation Guide validation and build tools for FSH (FHIR Shorthand) pr
 
 ## Installation
 
-### From GitHub (recommended for Outburn-IL projects)
-
 ```bash
-npm install --save-dev github:Outburn-IL/fhir-ig-tools
+npm install --save-dev fsh-and-chips
 ```
 
-### From npm (once published)
+Or install directly from GitHub:
 
 ```bash
-npm install --save-dev @outburn-il/fhir-ig-tools
+npm install --save-dev github:Outburn-IL/fsh-and-chips
 ```
 
 ## Quick Start

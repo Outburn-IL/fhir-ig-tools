@@ -1,7 +1,7 @@
 {
-  "name": "@outburn-il/fhir-ig-tools",
+  "name": "fsh-and-chips",
   "version": "1.0.0",
-  "description": "FHIR Implementation Guide validation and build tools for FSH projects",
+  "description": "FHIR Implementation Guide validation and build tools for FHIR Shorthand (FSH) projects",
   "type": "module",
   "main": "index.js",
   "bin": {
@@ -19,16 +19,19 @@
     "fhir",
     "hl7",
     "fsh",
+    "fhir-shorthand",
     "sushi",
     "validation",
     "implementation-guide",
-    "healthcare"
+    "ig",
+    "healthcare",
+    "interoperability"
   ],
   "author": "Outburn IL",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Outburn-IL/fhir-ig-tools.git"
+    "url": "https://github.com/Outburn-IL/fsh-and-chips.git"
   },
   "dependencies": {
     "adm-zip": "^0.5.14",
