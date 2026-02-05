@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 
 import fs from 'fs-extra';
 import path from 'path';
@@ -17,11 +17,12 @@ Options:
   -h, --help         Display this help message
   --skip-fix         Skip auto-fixing ConformanceMetadata
   --no-color         Disable colored output
+  --verbose          Show detailed file-by-file processing
 
 Checks performed:
-  • Duplicate aliases (multiple aliases → same URL)
-  • Duplicate URLs (multiple resources → same URL)
-  • Missing ConformanceMetadata (auto-fixes by default)
+   Duplicate aliases (multiple aliases  same URL)
+   Duplicate URLs (multiple resources  same URL)
+   Missing ConformanceMetadata (auto-fixes by default)
 
 Exit codes:
   0 - Success (no errors, only auto-fixes performed)
@@ -30,12 +31,14 @@ Exit codes:
 Examples:
   fhir-validate-fsh
   fhir-validate-fsh --skip-fix
+  fhir-validate-fsh --verbose
 `);
     process.exit(0);
 }
 
 const skipFix = args.includes('--skip-fix');
 const useColor = !args.includes('--no-color');
+const verbose = args.includes('--verbose');
 
 const fshFolder = getFshInputFolder();
 
@@ -61,11 +64,13 @@ const readAliases = () => {
     const aliasesPath = path.join(fshFolder, 'aliases.fsh');
     
     if (!fs.existsSync(aliasesPath)) {
-        console.log(`${color.yellow}⚠️  No aliases.fsh file found${color.reset}`);
+        console.log(`${color.yellow}  No aliases.fsh file found${color.reset}`);
         return;
     }
     
-    console.log(`${color.blue}📖 Reading aliases.fsh...${color.reset}`);
+    if (verbose) {
+        console.log(`${color.blue} Reading aliases.fsh...${color.reset}`);
+    }
     const content = fs.readFileSync(aliasesPath, 'utf8');
     const lines = content.split('\n');
     
@@ -99,7 +104,9 @@ const readAliases = () => {
         }
     });
     
-    console.log(`   Found ${aliases.size} aliases`);
+    if (verbose) {
+        console.log(`   Found ${aliases.size} aliases`);
+    }
 };
 
 // Process a single FSH file
@@ -184,15 +191,14 @@ const findFshFiles = (dir) => {
 
 // Main validation function
 const validateFsh = () => {
-    console.log(`${color.bright}🔍 FSH Validation Starting...${color.reset}\n`);
+    console.log(`${color.bright} FSH Validation Starting...${color.reset}\n`);
     
     // Step 1: Read and validate aliases
     readAliases();
     
     // Step 2: Process all FSH files
-    console.log(`\n${color.blue}📂 Processing FSH files...${color.reset}`);
     const fshFiles = findFshFiles(fshFolder);
-    console.log(`   Found ${fshFiles.length} FSH files\n`);
+    console.log(`${color.blue} Found ${fshFiles.length} FSH files${color.reset}\n`);
     
     fshFiles.forEach(file => {
         processFshFile(file);
@@ -210,12 +216,12 @@ const validateFsh = () => {
     
     // Report results
     console.log('\n' + '='.repeat(60));
-    console.log(`${color.bright}📊 Validation Results${color.reset}`);
+    console.log(`${color.bright} Validation Results${color.reset}`);
     console.log('='.repeat(60) + '\n');
     
     // Report duplicate aliases
     if (duplicateAliases.length > 0) {
-        console.log(`${color.red}❌ DUPLICATE ALIASES FOUND:${color.reset}`);
+        console.log(`${color.red} DUPLICATE ALIASES FOUND:${color.reset}`);
         console.log('   Multiple aliases pointing to the same URL:\n');
         duplicateAliases.forEach(dup => {
             console.log(`   URL: ${dup.url}`);
@@ -223,12 +229,12 @@ const validateFsh = () => {
             console.log(`   File: ${dup.file}\n`);
         });
     } else {
-        console.log(`${color.green}✅ No duplicate aliases found${color.reset}\n`);
+        console.log(`${color.green} No duplicate aliases found${color.reset}\n`);
     }
     
     // Report duplicate URLs
     if (duplicateUrls.length > 0) {
-        console.log(`${color.red}❌ DUPLICATE URLs FOUND:${color.reset}`);
+        console.log(`${color.red} DUPLICATE URLs FOUND:${color.reset}`);
         console.log('   Multiple resources using the same URL:\n');
         duplicateUrls.forEach(dup => {
             console.log(`   URL: ${dup.url}`);
@@ -238,29 +244,32 @@ const validateFsh = () => {
             console.log('');
         });
     } else {
-        console.log(`${color.green}✅ No duplicate URLs found${color.reset}\n`);
+        console.log(`${color.green} No duplicate URLs found${color.reset}\n`);
     }
     
     // Report files fixed
-    if (filesFixed.length > 0) {
-        console.log(`${color.green}🔧 CONFORMANCE METADATA ADDED:${color.reset}`);
+    if (filesFixed.length > 0 && verbose) {
+        console.log(`${color.green} CONFORMANCE METADATA ADDED:${color.reset}`);
         console.log(`   Added "* insert ConformanceMetadata" to ${filesFixed.length} file(s):\n`);
         filesFixed.forEach(fix => {
-            console.log(`   ${color.green}✓${color.reset} ${fix.file}`);
+            console.log(`   ${color.green}${color.reset} ${fix.file}`);
             console.log(`     ${fix.resourceType}: ${fix.resourceName}\n`);
         });
+    } else if (filesFixed.length > 0) {
+        console.log(`${color.green} Auto-fixed ConformanceMetadata in ${filesFixed.length} file(s)${color.reset}\n`);
     } else if (!skipFix) {
-        console.log(`${color.green}✅ All conformance resources already have ConformanceMetadata${color.reset}\n`);
+        console.log(`${color.green} All conformance resources already have ConformanceMetadata${color.reset}\n`);
     }
     
     // Summary
     console.log('='.repeat(60));
     const hasErrors = duplicateAliases.length > 0 || duplicateUrls.length > 0;
     if (hasErrors) {
-        console.log(`${color.red}❌ Validation completed with errors${color.reset}`);
+        console.log(`${color.red} Validation completed with errors - pipeline stopped${color.reset}`);
+        console.log(`${color.yellow}   Fix the errors above and run the test again${color.reset}`);
         process.exit(1);
     } else {
-        console.log(`${color.green}✅ Validation completed successfully${color.reset}`);
+        console.log(`${color.green} Validation completed successfully${color.reset}`);
         if (filesFixed.length > 0) {
             console.log(`   ${filesFixed.length} file(s) were automatically fixed`);
         }

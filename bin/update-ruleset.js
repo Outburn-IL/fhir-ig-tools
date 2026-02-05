@@ -1,7 +1,8 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 
-import { readSushiConfig, overwriteRuleSet, getFshInputFolder } from "../lib/utils.js";
+import { readSushiConfig, getFshInputFolder } from "../lib/utils.js";
 import fs from 'fs-extra';
+import path from 'path';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -19,6 +20,8 @@ Description:
   Reads metadata from sushi-config.yaml and generates a FHIR Shorthand
   RuleSet containing version, publisher, date, and contact information.
   
+  Verifies that the version in RuleSet-metadata.fsh matches sushi-config.yaml.
+  
   The RuleSet can be inserted into conformance resources using:
   * insert ConformanceMetadata
 
@@ -31,28 +34,47 @@ Examples:
     process.exit(0);
 }
 
-const sushiConfig = readSushiConfig();
-const version = sushiConfig?.version || "0.0.1";
-const publisher = sushiConfig?.publisher?.name ?? sushiConfig?.publisher ?? "Unknown Publisher";
-const _date = new Date().toISOString().slice(0, 10);
+const updateRuleset = () => {
+    const sushiConfig = readSushiConfig();
+    const version = sushiConfig?.version || "0.0.1";
+    const publisher = sushiConfig?.publisher?.name ?? sushiConfig?.publisher ?? "Unknown Publisher";
+    const _date = new Date().toISOString().slice(0, 10);
 
-// Get contact info from sushi-config if available, otherwise use defaults
-const contact = sushiConfig?.contact?.[0];
-const contactEmail = contact?.telecom?.find(t => t.system === 'email')?.value || 
-                     "contact@example.org";
+    // Get contact info from sushi-config if available, otherwise use defaults
+    const contact = sushiConfig?.contact?.[0];
+    const contactEmail = contact?.telecom?.find(t => t.system === 'email')?.value || 
+                         "contact@example.org";
 
-const fsh = `RuleSet: ConformanceMetadata
+    const fsh = `RuleSet: ConformanceMetadata
 * ^version = "${version}"
 * ^publisher = "${publisher}"
 * ^date = "${_date}"
 * ^contact[0].telecom[0].system = #email
 * ^contact[0].telecom[0].value = "${contactEmail}"`;
 
-// Ensure the input/fsh folder exists
-const fshInputFolder = getFshInputFolder();
-fs.ensureDirSync(fshInputFolder);
+    // Ensure the input/fsh folder exists
+    const fshInputFolder = getFshInputFolder();
+    fs.ensureDirSync(fshInputFolder);
 
-// Write the RuleSet file
-overwriteRuleSet(fsh);
+    // Check if RuleSet-metadata.fsh already exists and verify version
+    const rulesetPath = path.join(fshInputFolder, 'RuleSet-metadata.fsh');
+    if (fs.existsSync(rulesetPath)) {
+        const existingContent = fs.readFileSync(rulesetPath, 'utf8');
+        const versionMatch = existingContent.match(/\*\s*\^version\s*=\s*"([^"]+)"/);
+        
+        if (versionMatch) {
+            const existingVersion = versionMatch[1];
+            if (existingVersion !== version) {
+                console.log(`  Version mismatch detected in RuleSet-metadata.fsh`);
+                console.log(`   Current: ${existingVersion}  Updated: ${version}`);
+            }
+        }
+    }
 
-console.log(`✅ Updated RuleSet-metadata.fsh with version ${version} and date ${_date}`);
+    // Write the RuleSet file
+    fs.writeFileSync(rulesetPath, fsh, 'utf8');
+
+    console.log(` Updated RuleSet-metadata.fsh with version ${version} and date ${_date}`);
+};
+
+updateRuleset();
