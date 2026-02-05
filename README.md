@@ -57,20 +57,14 @@ fhir-validate-fsh [options]
 - Duplicate URLs (multiple resources → same URL)
 - Missing ConformanceMetadata (auto-fixes by default)
 
-**Options:**
-- `-h, --help` - Display help message
-- `--skip-fix` - Skip auto-fixing ConformanceMetadata
-- `--no-color` - Disable colored output
+**Options:**\n- `-h, --help` - Display help message\n- `--skip-fix` - Skip auto-fixing ConformanceMetadata\n- `--no-color` - Disable colored output\n- `--verbose` - Show detailed file-by-file processing
 
 **Exit codes:**
 - `0` - Success (no errors, only auto-fixes performed)
 - `1` - Validation errors found (duplicates detected)
 
 **Examples:**
-```bash
-fhir-validate-fsh
-fhir-validate-fsh --skip-fix
-```
+```bash\nfhir-validate-fsh\nfhir-validate-fsh --skip-fix\nfhir-validate-fsh --verbose\n```
 
 ---
 
@@ -118,7 +112,7 @@ fhir-validate-examples
 
 ---
 
-### fhir-update-ruleset
+### fhir-sync-version\n\nSynchronizes version from sushi-config.yaml to package.json.\n\n```bash\nfhir-sync-version [options]\n```\n\n**Options:**\n- `-h, --help` - Display help message\n\n**Description:**\nReads the version from sushi-config.yaml and updates both package.json and package-lock.json to match. Ensures version consistency across all project files.\n\n**Examples:**\n```bash\nfhir-sync-version\n```\n\n---\n\n### fhir-update-ruleset
 
 Generates or updates RuleSet-metadata.fsh with current project metadata.
 
@@ -311,3 +305,7 @@ MIT
 ## Author
 
 Outburn IL - FHIR Implementation Guide development tools
+
+
+
+
