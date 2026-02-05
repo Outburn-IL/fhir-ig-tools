@@ -48,6 +48,7 @@ const urlsByAlias = new Map(); // url -> Set of resources using it
 const duplicateAliases = [];
 const duplicateUrls = [];
 const filesFixed = [];
+const undefinedAliases = new Map();
 
 // Color helpers
 const color = {
@@ -136,6 +137,19 @@ const processFshFile = (filePath) => {
             hasConformanceMetadata = true;
         }
         
+                // Check for undefined aliases
+        const aliasUsageMatch = line.match(/\$[a-zA-Z0-9_-]+/g);
+        if (aliasUsageMatch) {
+            aliasUsageMatch.forEach(alias => {
+                if (!aliases.has(alias)) {
+                    if (!undefinedAliases.has(relativePath)) {
+                        undefinedAliases.set(relativePath, new Set());
+                    }
+                    undefinedAliases.get(relativePath).add(alias);
+                }
+            });
+        }
+        
         // Extract URL from ^url = $alias format
         const urlMatch = line.match(/\*\s*\^url\s*=\s*(\$\S+)/);
         if (urlMatch) {
@@ -219,6 +233,18 @@ const validateFsh = () => {
     console.log(`${color.bright} Validation Results${color.reset}`);
     console.log('='.repeat(60) + '\n');
     
+        // Report undefined aliases
+    if (undefinedAliases.size > 0) {
+        console.log(color.red + ' UNDEFINED ALIASES FOUND:' + color.reset);
+        console.log('   Aliases used but not defined in aliases.fsh:\n');
+        undefinedAliases.forEach((aliasSet, file) => {
+            console.log('   File: ' + file);
+            console.log('   Undefined: ' + Array.from(aliasSet).join(', ') + '\n');
+        });
+    } else {
+        console.log(color.green + ' All used aliases are defined' + color.reset + '\n');
+    }
+    
     // Report duplicate aliases
     if (duplicateAliases.length > 0) {
         console.log(`${color.red} DUPLICATE ALIASES FOUND:${color.reset}`);
@@ -263,7 +289,7 @@ const validateFsh = () => {
     
     // Summary
     console.log('='.repeat(60));
-    const hasErrors = duplicateAliases.length > 0 || duplicateUrls.length > 0;
+    const hasErrors = duplicateAliases.length > 0 || duplicateUrls.length > 0 || undefinedAliases.size > 0;
     if (hasErrors) {
         console.log(`${color.red} Validation completed with errors - pipeline stopped${color.reset}`);
         console.log(`${color.yellow}   Fix the errors above and run the test again${color.reset}`);

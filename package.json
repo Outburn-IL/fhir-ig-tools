@@ -10,7 +10,7 @@
     "fhir-validate-examples": "./bin/validate-examples.js",
     "fhir-sync-version": "./bin/sync-version.js",
     "fhir-update-ruleset": "./bin/update-ruleset.js",
-    "fhir-install-java": "./bin/install-java.js"
+    "fhir-install-java": "./bin/install-java.js",\n    "fhir-validate-config": "./bin/validate-config.js",\n    "fhir-validate-ready": "./bin/validate-ready.js"
   },
   "scripts": {
     "test": "echo \"Run tests in your FHIR IG project\" && exit 0"
@@ -42,3 +42,4 @@
     "node": ">=18.0.0"
   }
 }
+
