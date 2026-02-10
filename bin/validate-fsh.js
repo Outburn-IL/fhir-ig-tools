@@ -124,6 +124,12 @@ const processFshFile = (filePath) => {
     
     // Check each line
     lines.forEach((line, index) => {
+        // Skip comment lines
+        const trimmedLine = line.trim();
+        if (trimmedLine.startsWith('//')) {
+            return;
+        }
+
         // Detect resource type
         const resourceMatch = line.match(/^(Profile|Extension|CodeSystem|ValueSet):\s+(\S+)/);
         if (resourceMatch) {
@@ -141,6 +147,10 @@ const processFshFile = (filePath) => {
         const aliasUsageMatch = line.match(/\$[a-zA-Z0-9_-]+/g);
         if (aliasUsageMatch) {
             aliasUsageMatch.forEach(alias => {
+                // Skip FHIR keywords like $this
+                if (alias === '$this') {
+                    return;
+                }
                 if (!aliases.has(alias)) {
                     if (!undefinedAliases.has(relativePath)) {
                         undefinedAliases.set(relativePath, new Set());
