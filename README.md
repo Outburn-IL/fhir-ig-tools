@@ -417,6 +417,16 @@ Both methods work identically. npm scripts are added automatically during instal
 
 ## 🐛 Troubleshooting
 
+### Security vulnerabilities during installation
+
+You may see npm warnings about vulnerabilities in `fsh-sushi` dependencies. These are known issues in SUSHI's transitive dependencies:
+
+```bash
+npm audit fix
+```
+
+Most vulnerabilities are in development dependencies and don't affect runtime security. The SUSHI team is aware and working on updates.
+
 ### "Command not found" after installation
 
 Run `npm install` again to ensure all bin links are created:
