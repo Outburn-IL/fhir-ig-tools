@@ -196,25 +196,28 @@ npm run check:publication
 
 ---
 
-#### `npm run validate:ig` (or `fhir-validate-ig`)
-**Validate IG resources** - Runs FHIR validator on your conformance resources.
+#### `npm run validate:ig` (or `fhir-validate-ig-full`)
+**Full IG validation workflow** - Pre-SUSHI checks, SUSHI build + differentials, then IG validation.
 
 ```bash
 npm run validate:ig
 ```
 
-**Prerequisites:** Requires differentials to exist (automatically created by `npm test`)
-
 **What it does:**
-- Validates all resources in `differentials/fsh-generated/resources/`
-- Uses official FHIR validator
-- Generates HTML and JSON reports
+- Runs FSH validation and config checks
+- Builds with SUSHI and generates differentials
+- Validates resources in `differentials/fsh-generated/resources/`
 
-**When to use:** After SUSHI build, as part of `npm test`
+**CLI alternative (IG validation only):**
+```bash
+fhir-validate-ig
+```
+
+**When to use:** When you want the full IG pipeline without example validation
 
 ---
 
-#### `npm run validate:examples` (or `fhir-validate-examples`)
+#### `npm run validate:examples` / `npm run validate:ex` (or `fhir-validate-examples`)
 **Validate examples** - Validates all example resources in your `examples/` folder.
 
 ```bash
@@ -351,9 +354,10 @@ npm run validate:config
 | Task | Command | When |
 |------|---------|------|
 | Run everything | `npm test` | Before commit, in CI/CD |
+| Full IG pipeline (no examples) | `npm run validate:ig` | Before checking IG resources only |
 | Check FSH files only | `npm run validate:fsh` | After editing FSH |
 | Check config | `npm run validate:config` | After editing sushi-config.yaml |
-| Check examples only | `npm run validate:examples` | After adding/editing examples |
+| Check examples only | `npm run validate:examples` or `npm run validate:ex` | After adding/editing examples |
 | Pre-publication check | `npm run check:publication` | Before tagging a release |
 | Update metadata | `npm run ruleset` | After changing version/publisher |
 | Sync versions | `npm run sync:version` | After bumping version |
@@ -450,7 +454,8 @@ This is expected! FSH validation catches *some* errors but not all. SUSHI perfor
 Use individual commands for faster iteration:
 ```bash
 npm run validate:fsh      # Fast - just checks FSH files
-npm run validate:ig       # Slower - runs full validator
+fhir-validate-ig          # Only runs the validator on existing differentials
+npm run validate:ig       # Full pipeline (slower)
 ```
 
 ### Auto-fix changed my FSH files

@@ -9,6 +9,7 @@
     "fhir-validate-config": "./bin/validate-config.js",
     "fhir-validate-quality": "./bin/validate-quality.js",
     "fhir-validate-ig": "./bin/validate-ig.js",
+    "fhir-validate-ig-full": "./bin/validate-ig-full.js",
     "fhir-validate-examples": "./bin/validate-examples.js",
     "fhir-check-publication": "./bin/check-publication.js",
     "fhir-sync-version": "./bin/sync-version.js",
